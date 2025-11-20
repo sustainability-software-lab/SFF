@@ -1,0 +1,67 @@
+# Configuration for GNN-based Process Analysis
+
+# Data paths
+data:
+  flowsheet_dir: "exported_flowsheets/bioindustrial_park"
+  output_dir: "outputs"
+  processed_data_dir: "data/processed"
+
+# Model configuration
+model:
+  type: "GAT"  # Graph Attention Network
+  num_gat_layers: 2
+  hidden_channels: 64
+  heads: 4  # Number of attention heads for GAT
+  dropout: 0.2
+  output_dim: 1  # For regression tasks (e.g., MSP prediction)
+
+# Training configuration
+training:
+  batch_size: 8
+  learning_rate: 0.001
+  num_epochs: 200
+  validation_split: 0.2
+  test_split: 0.1
+  early_stopping_patience: 20
+  
+# Feature engineering
+features:
+  # Node features (unit operations)
+  node_features:
+    - "equipment_type_id"
+    - "temperature"
+    - "pressure"
+    - "installed_cost"
+    - "purchase_cost"
+    - "power_consumption"
+    - "heat_duty"
+  
+  # Edge features (streams)
+  edge_features:
+    - "mass_flow"
+    - "molar_flow"
+    - "volumetric_flow"
+    - "temperature"
+    - "pressure"
+    - "stream_price"
+  
+  # Target variable
+  target: "total_installed_cost"  # Can be changed to MSP or other metrics
+
+# Weighted scoring system
+scoring:
+  use_weighted_error: true
+  weight_by: "installed_cost"  # Options: "installed_cost", "energy_consumption", "custom"
+  
+# Google Cloud / Gemini configuration
+gemini:
+  project_id: ""  # Set via environment variable or here
+  location: "us-central1"
+  model_name: "gemini-1.5-pro"
+  
+# Logging
+logging:
+  level: "INFO"
+  save_logs: true
+  log_dir: "logs"
+

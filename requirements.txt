@@ -1,0 +1,27 @@
+# Core ML/DL libraries
+torch>=2.0.0
+torch-geometric>=2.3.0
+# torch-scatter>=2.1.0  # Optional: for advanced sparse operations
+# torch-sparse>=0.6.0   # Optional: for advanced sparse operations
+# Note: torch-scatter and torch-sparse may have compatibility issues with Python 3.13
+# They are not required for basic GNN functionality
+
+# Data handling
+pandas>=2.0.0
+numpy>=1.24.0
+networkx>=3.0
+scikit-learn>=1.3.0
+
+# Google Cloud & Gemini
+google-cloud-aiplatform>=1.38.0
+vertexai>=1.38.0
+
+# Visualization
+matplotlib>=3.7.0
+seaborn>=0.12.0
+plotly>=5.14.0
+
+# Utilities
+tqdm>=4.65.0
+pyyaml>=6.0
+
