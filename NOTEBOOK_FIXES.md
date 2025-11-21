@@ -86,21 +86,78 @@ KeyError: 'flowsheet_name'
 
 ---
 
+### 7. ✅ Data Structure Error: Units and Streams
+**Problem:** Code assumed `units` and `streams` were dictionaries, but they are actually lists of dictionaries.
+
+**Error:**
+```python
+AttributeError: 'list' object has no attribute 'items'
+```
+
+**Fix Applied:**
+- **Cell 6** (Exploration): Changed from `.items()` iteration to list iteration, accessing `id` and `unit_type` fields from each dict
+- **Cell 8** (Statistics): Changed from `fs['units'].values()` to `fs['units']` (list iteration), and `unit.get('type')` to `unit.get('unit_type')`
+- **Cell 11** (Visualization): Updated `flowsheet_to_networkx()` function to iterate over lists instead of using `.items()`
+
+---
+
+### 8. ✅ GraphVAE Parameter Names
+**Problem:** Used incorrect parameter names when initializing GraphVAE model.
+
+**Error:**
+```python
+TypeError: GraphVAE.__init__() got an unexpected keyword argument 'node_features'. Did you mean 'num_node_features'?
+```
+
+**Fix Applied:**
+- **Cell 16** (Model Init): Changed `node_features` → `num_node_features`, `edge_features` → `num_edge_features`, `hidden_dim` → `hidden_channels`
+- **Cell 19** (Training Loop): Fixed GraphVAE instantiation with correct parameter names
+- **Cell 24** (Experiment): Fixed model_exp2 instantiation with correct parameter names
+- **Cell 26** (Generation): Fixed final_model instantiation with correct parameter names
+
+**Correct Parameter Names:**
+- `num_node_features` (not `node_features`)
+- `num_edge_features` (not `edge_features`)
+- `hidden_channels` (not `hidden_dim`)
+- `latent_dim` ✅
+- `max_num_nodes` ✅
+
+---
+
+### 9. ✅ Stream Field Names (SFF Format)
+**Problem:** Code was looking for `from_unit` and `to_unit` fields in streams, but SFF format uses `source_unit_id` and `sink_unit_id`.
+
+**Impact:** Resulted in 0 edges being loaded from real flowsheets, making visualizations show disconnected graphs.
+
+**Fix Applied:**
+- **Cell 6** (Data Exploration): Updated stream display to show `source_unit_id` and `sink_unit_id`
+- **Cell 11** (NetworkX Conversion): Fixed `flowsheet_to_networkx()` function to use correct field names
+- Added check to skip streams where source or sink is "None" (string)
+
+**Correct SFF Field Names:**
+- `source_unit_id` (not `from_unit`)
+- `sink_unit_id` (not `to_unit`)
+
+---
+
 ## Summary
 
-All fixes have been applied to the notebook. The notebook should now run without import, configuration, or metadata errors.
+All fixes have been applied to the notebook. The notebook should now run without import, configuration, metadata, data structure, model parameter, or SFF format errors.
 
-**Total Fixes Applied: 6**
+**Total Fixes Applied: 9**
 
 1. Import: `FlowsheetFeatureExtractor` → `FeatureExtractor`
 2. Import: `GraphBuilder` → `FlowsheetGraphBuilder`
-3. Parameter: `random_seed` → `random_state`
+3. Parameter: `random_seed` → `random_state` (sklearn)
 4. Variable: `trainer` → `trainer_exp2`
 5. Config Key: `raw_flowsheets_dir` → `flowsheet_dir`
 6. Metadata Key: `flowsheet_name` → `process_title` (with fallback)
+7. Data Structure: Fixed `units` and `streams` from dict to list handling (3 cells)
+8. Model Parameters: Fixed GraphVAE parameter names (4 cells affected)
+9. **Stream Fields: `from_unit`/`to_unit` → `source_unit_id`/`sink_unit_id` (SFF format)**
 
 ### Files Modified:
-- `graph_generation_deep_dive.ipynb` (5 cells updated, 6 total fixes)
+- `graph_generation_deep_dive.ipynb` (13 cells updated, 9 total fixes)
 
 ### Testing Status:
 ✅ Import statements corrected (FeatureExtractor, FlowsheetGraphBuilder)  
